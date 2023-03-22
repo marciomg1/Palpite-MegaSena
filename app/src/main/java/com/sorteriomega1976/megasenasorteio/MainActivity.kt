@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val sortedNumbers = numbers.sorted().map { it.toString().padStart(2, '0') }.joinToString(separator = " - ")
-                 bt1.startAnimation(fadeInAnimation2)  //criar uma nova animação dedicada ao bt1
+                 bt1.startAnimation(fadeInAnimation2)  //fadeInAnimation criada apenas para o bt1
                 bt1.text = "Boa sorte!\n $sortedNumbers"
                 bt1.setBackgroundResource(androidx.appcompat.R.drawable.abc_ab_share_pack_mtrl_alpha)
                 val randomIndex = Random.nextInt(messages.size)
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 tx1.startAnimation(fadeInAnimation)
                 tv3.text = "Se vc ganhar faça um PIX como\nAgradecimento (35)992469549"
                 tv3.startAnimation(fadeInAnimation)
-                //bt1.startAnimation(fadeInAnimation2)
+               
 
             }
         })
