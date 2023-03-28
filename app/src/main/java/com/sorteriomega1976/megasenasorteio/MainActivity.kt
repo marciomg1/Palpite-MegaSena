@@ -1,5 +1,6 @@
 package com.sorteriomega1976.megasenasorteio
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         "Você é capaz de conquistar grandes coisas, vá além do jogo!",
         "Não tenha medo de experimentar coisas novas e descobrir seu potencial!",
         "Você é mais do que um jogador, você é um ser humano incrível e único!",
-            "teste"
+
     )
 
 
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         anim.setAnimationListener(object: Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
+            @SuppressLint("SetTextI18n")
             override fun onAnimationEnd(animation: Animation?) {
 
                 val random = java.util.Random()
