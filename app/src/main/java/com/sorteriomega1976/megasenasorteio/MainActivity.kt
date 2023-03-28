@@ -1,11 +1,13 @@
 package com.sorteriomega1976.megasenasorteio
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.Button
+
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -26,25 +28,35 @@ class MainActivity : AppCompatActivity() {
         "O mundo está cheio de oportunidades, concentre-se nas suas!",
         "Você é capaz de conquistar grandes coisas, vá além do jogo!",
         "Não tenha medo de experimentar coisas novas e descobrir seu potencial!",
-        "Você é mais do que um jogador, você é um ser humano incrível e único!"
+        "Você é mais do que um jogador, você é um ser humano incrível e único!",
+            "teste"
     )
+
+
+    private lateinit var bt1: Button
+    private lateinit var bt2: Button
+    private lateinit var tx1: TextView
+    private lateinit var tv3: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bt1 = findViewById<Button>(R.id.bt1)
-        val bt2 = findViewById<Button>(R.id.bt2)
-        val tx1 = findViewById<TextView>(R.id.tx1)
-        val tv3 = findViewById<TextView>(R.id.tv3)
-        val anim = android.view.animation.AnimationUtils.loadAnimation(applicationContext, R.anim.button_fade_out)
-        val fadeInAnimation = android.view.animation.AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-        val fadeInAnimation2 = android.view.animation.AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
+
+        bt1 = findViewById(R.id.bt1)
+        bt2 = findViewById(R.id.bt2)
+        tx1 = findViewById(R.id.tx1)
+        tv3 = findViewById(R.id.tv3)
+
+        val anim = AnimationUtils.loadAnimation(applicationContext, R.anim.button_fade_out)
+        val fadeInAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
+        val fadeInAnimation2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
 
         anim.setAnimationListener(object: Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
+
                 val random = java.util.Random()
                 val numbers = mutableSetOf<Int>()
                 while (numbers.size < 6) {
@@ -55,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val sortedNumbers = numbers.sorted().map { it.toString().padStart(2, '0') }.joinToString(separator = " - ")
-                 bt1.startAnimation(fadeInAnimation2)  //fadeInAnimation criada apenas para o bt1
+                bt1.startAnimation(fadeInAnimation2)  //fadeInAnimation criada apenas para o bt1
                 bt1.text = "Boa sorte!\n $sortedNumbers"
                 bt1.setBackgroundResource(androidx.appcompat.R.drawable.abc_ab_share_pack_mtrl_alpha)
                 val randomIndex = Random.nextInt(messages.size)
@@ -63,15 +75,14 @@ class MainActivity : AppCompatActivity() {
                 tx1.startAnimation(fadeInAnimation)
                 tv3.text = "Se vc ganhar faça um PIX como\nAgradecimento (35)992469549"
                 tv3.startAnimation(fadeInAnimation)
-               
 
             }
         })
+
         bt1.setOnClickListener {
             bt1.startAnimation(anim)
             tx1.startAnimation(anim)
             tv3.startAnimation(anim)
-
         }
 
         bt2.setOnClickListener {
