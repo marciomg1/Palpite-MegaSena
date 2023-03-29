@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
+
     private val messages = arrayOf(
         "Se você gosta de jogos, é importante lembrar que a vida real também pode ser emocionante e desafiadora!",
         "Lembre-se de manter uma vida equilibrada e saudável, com atividades variadas e momentos de lazer.",
@@ -29,37 +30,35 @@ class MainActivity : AppCompatActivity() {
         "O mundo está cheio de oportunidades, concentre-se nas suas!",
         "Você é capaz de conquistar grandes coisas, vá além do jogo!",
         "Não tenha medo de experimentar coisas novas e descobrir seu potencial!",
-        "Você é mais do que um jogador, você é um ser humano incrível e único!",
-
+        "Você é mais do que um jogador, você é um ser humano incrível e único!"
     )
-
 
     private lateinit var bt1: Button
     private lateinit var bt2: Button
     private lateinit var tx1: TextView
     private lateinit var tv3: TextView
 
+    private val resultados = mutableListOf<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         bt1 = findViewById(R.id.bt1)
         bt2 = findViewById(R.id.bt2)
         tx1 = findViewById(R.id.tx1)
         tv3 = findViewById(R.id.tv3)
 
-        val anim = AnimationUtils.loadAnimation(applicationContext, R.anim.button_fade_out)
-        val fadeInAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-        val fadeInAnimation2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
+        val animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.button_fade_out)
+        val animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
+        val animFadeIn2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
 
-        anim.setAnimationListener(object: Animation.AnimationListener {
+        animFadeOut.setAnimationListener(object: Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
-            @SuppressLint("SetTextI18n")
             override fun onAnimationEnd(animation: Animation?) {
 
-                val random = java.util.Random()
+                val random = Random
                 val numbers = mutableSetOf<Int>()
                 while (numbers.size < 6) {
                     val n = random.nextInt(60) + 1
@@ -68,28 +67,44 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                val sortedNumbers = numbers.sorted().map { it.toString().padStart(2, '0') }.joinToString(separator = " - ")
-                bt1.startAnimation(fadeInAnimation2)  //fadeInAnimation criada apenas para o bt1
+                val sortedNumbers = numbers.sorted().joinToString(separator = " - ") { it.toString().padStart(2, '0') }
+                resultados.add(sortedNumbers)
+
+                val resultadoText = resultados.joinToString(separator = "\n")
+                val intent = Intent(this@MainActivity, ResultadoActivity::class.java)
+                intent.putExtra("resultado", resultadoText)
+
+
+                bt1.startAnimation(animFadeIn2)
                 bt1.text = "Boa sorte!\n $sortedNumbers"
                 bt1.setBackgroundResource(androidx.appcompat.R.drawable.abc_ab_share_pack_mtrl_alpha)
-                val randomIndex = Random.nextInt(messages.size)
-                tx1.text = messages[randomIndex]
-                tx1.startAnimation(fadeInAnimation)
-                tv3.text = "Se vc ganhar faça um PIX como\nAgradecimento (35)992469549"
-                tv3.startAnimation(fadeInAnimation)
+
+                tx1.text = messages.random()
+                tx1.startAnimation(animFadeIn)
+                tv3.text = "Se você ganhar, faça um PIX como\n agradecimento (35)992469549"
+                tv3.startAnimation(animFadeIn)
 
             }
         })
 
         bt1.setOnClickListener {
-            bt1.startAnimation(anim)
-            tx1.startAnimation(anim)
-            tv3.startAnimation(anim)
+            bt1.startAnimation(animFadeOut)
+            tx1.startAnimation(animFadeOut)
+            tv3.startAnimation(animFadeOut)
         }
 
         bt2.setOnClickListener {
             val uri: Uri = Uri.parse("https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx")
             val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
+
+        val btRes: Button = findViewById(R.id.btRes)
+
+        btRes.setOnClickListener {
+            val resultadoText = resultados.joinToString(separator = "\n\n")
+            val intent = Intent(this, ResultadoActivity::class.java)
+            intent.putExtra("resultado", resultadoText)
             startActivity(intent)
         }
     }
