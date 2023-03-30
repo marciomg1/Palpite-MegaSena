@@ -22,6 +22,15 @@ class MainActivity : AppCompatActivity() {
         "Se você perceber que está jogando demais, tente estabelecer limites, ou mesmo fazer uma pausa por um tempo.",
         "O jogo pode te dar uma sensação de prazer e recompensa, mas também pode te causar ansiedade e irritabilidade. Não deixe que o jogo controle suas emoções.",
         "O jogo pode ser uma forma de escapar dos problemas, porém pode criar mais dificuldades. Enfrente suas questões com equilibrio e disposição",
+        "Você é muito mais do que um jogador. Você tem talentos e potenciais, explore outras possibilidades!",
+        "Você é um ser humano completo e incrivel! Não se veja apenas como um jogador!",
+        "Seus sonhos vão muito além dos jogos, vá atrás deles!",
+        "Não se limite ao jogo, explore todas as novas possibilidades!",
+        "Você é capaz de muito mais do que imagina, vá em frente!",
+        "O mundo está cheio de oportunidades, concentre-se nas suas!",
+        "Você é capaz de conquistar grandes coisas, vá além do jogo!",
+        "Não tenha medo de experimentar coisas novas e descobrir seu potencial!",
+        "Você é mais do que um jogador, você é um ser humano incrível e único!"
     )
 
     private lateinit var bt1: Button
@@ -44,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         val animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         val animFadeIn2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
 
-        animFadeOut.setAnimationListener(object: Animation.AnimationListener {
+        animFadeOut.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
@@ -58,7 +67,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                val sortedNumbers = numbers.sorted().joinToString(separator = " - ") { it.toString().padStart(2, '0') }
+                val sortedNumbers = numbers.sorted()
+                    .joinToString(separator = " - ") { it.toString().padStart(2, '0') }
                 resultados.add(sortedNumbers)
 
                 val resultadoText = resultados.joinToString(separator = "\n")
@@ -92,9 +102,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val btRes: Button = findViewById(R.id.btRes)
-
         btRes.setOnClickListener {
-
             val resultadoText = resultados.joinToString(separator = "\n\n")
             val intent = Intent(this, ResultadoActivity::class.java)
             intent.putExtra("resultado", resultadoText)
