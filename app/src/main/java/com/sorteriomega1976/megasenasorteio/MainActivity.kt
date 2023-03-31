@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
-
+    // Mensagens exibidas ao sortear os números
     private val messages = arrayOf(
         "Se você gosta de jogos, é importante lembrar que a vida real também pode ser emocionante e desafiadora!",
         "Lembre-se de manter uma vida equilibrada e saudável, com atividades variadas e momentos de lazer.",
@@ -30,25 +30,31 @@ class MainActivity : AppCompatActivity() {
         "O mundo está cheio de oportunidades, concentre-se nas suas!",
         "Você é capaz de conquistar grandes coisas, vá além do jogo!",
         "Não tenha medo de experimentar coisas novas e descobrir seu potencial!",
-        "Você é mais do que um jogador, você é um ser humano incrível e único!"
-    )
+        "Você é mais do que um jogador, você é um ser humano incrível e único!",
+        "Aposte com moderação e mantenha o controle sobre suas escolhas.",
+        "Não aposte mais do que pode perder.",
+        "Gerencie bem o seu dinheiro e estabeleça um limite para as suas apostas.",
+        "Não tente recuperar perdas apostando mais."
 
+    )
+    // Views utilizadas na atividade:
     private lateinit var bt1: Button
     private lateinit var bt2: Button
     private lateinit var tx1: TextView
     private lateinit var tv3: TextView
 
+    // Lista para armazenar os resultados já sorteados
     private val resultados = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        // Inicialização das views
         bt1 = findViewById(R.id.bt1)
         bt2 = findViewById(R.id.bt2)
         tx1 = findViewById(R.id.tx1)
         tv3 = findViewById(R.id.tv3)
-
+        // Animações utilizadas na atividade
         val animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.button_fade_out)
         val animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         val animFadeIn2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
@@ -57,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
-
+                // Sorteia 6 números aleatórios entre 1 e 60 e exibe o resultado
                 val random = Random
                 val numbers = mutableSetOf<Int>()
                 while (numbers.size < 6) {
@@ -72,10 +78,12 @@ class MainActivity : AppCompatActivity() {
                 resultados.add(sortedNumbers)
 
                 val resultadoText = resultados.joinToString(separator = "\n")
+
+                // Inicia a atividade de resultados passando o texto com os resultados como parâmetro
                 val intent = Intent(this@MainActivity, ResultadoActivity::class.java)
                 intent.putExtra("resultado", resultadoText)
 
-
+                // Atualiza a exibição dos botões e textos com as animações apropriadas
                 bt1.startAnimation(animFadeIn2)
                 bt1.text = "Boa sorte!\n $sortedNumbers"
                 bt1.setBackgroundResource(androidx.appcompat.R.drawable.abc_ab_share_pack_mtrl_alpha)
@@ -87,20 +95,23 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
-
+        //Define um listener para o clique no botão bt1. Quando o botão é clicado, as animações
+        // de fade out são executadas nos elementos da interface gráfica.
         bt1.setOnClickListener {
             bt1.startAnimation(animFadeOut)
             tx1.startAnimation(animFadeOut)
             tv3.startAnimation(animFadeOut)
 
         }
-
+        //Define um listener para o clique no botão bt2. Quando o botão é clicado, é aberta a página
+        // da Mega-Sena no site da Caixa.
         bt2.setOnClickListener {
             val uri: Uri = Uri.parse("https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         }
-
+        //Define um listener para o clique no botão btRes. Quando o botão é clicado, é exibido o
+        // resultado completo dos sorteios já realizados.
         val btRes: Button = findViewById(R.id.btRes)
         btRes.setOnClickListener {
             val resultadoText = resultados.joinToString(separator = "\n\n")
