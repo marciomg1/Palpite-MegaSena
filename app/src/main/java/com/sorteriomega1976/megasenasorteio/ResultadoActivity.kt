@@ -12,7 +12,6 @@ class ResultadoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resultado)
-
         // Inicializa a TextView a partir do seu ID definido no arquivo de layout
         tvR = findViewById<TextView>(R.id.tvR)
 
@@ -26,7 +25,6 @@ class ResultadoActivity : AppCompatActivity() {
             val resultadoText = intent.getStringExtra("resultado")
             tvR.text = resultadoText
         }
-
         // Configura o botão "Voltar" para iniciar a MainActivity quando pressionado
         val btV: Button = findViewById(R.id.btV)
         btV.setOnClickListener {
@@ -34,5 +32,4 @@ class ResultadoActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
 }
