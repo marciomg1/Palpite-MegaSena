@@ -35,16 +35,4 @@ class ResultadoActivity : AppCompatActivity() {
         }
     }
 
-    // Sobrescreve o método onSaveInstanceState() para salvar o estado atual da atividade antes de ser destruída
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString("resultado", tvR.text.toString())
-    }
-
-    // Sobrescreve o método onRestoreInstanceState() para restaurar o estado anterior salvo quando a atividade é recriada
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        val resultadoText = savedInstanceState.getString("resultado")
-        tvR.text = resultadoText
-    }
 }
