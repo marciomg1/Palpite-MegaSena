@@ -1,17 +1,28 @@
 package com.sorteriomega1976.megasenasorteio
 
-
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import java.io.File
+import java.io.FileWriter
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
+
     // Mensagens exibidas ao sortear os números
     private val messages = arrayOf(
         "Se você gosta de jogos, é importante lembrar que a vida real também pode ser emocionante e desafiadora!",
@@ -35,29 +46,83 @@ class MainActivity : AppCompatActivity() {
         "Não aposte mais do que pode perder.",
         "Gerencie bem o seu dinheiro e estabeleça um limite para as suas apostas.",
         "Não tente recuperar perdas apostando mais."
-
     )
+
     // Views utilizadas na atividade:
     private lateinit var bt1: Button
     private lateinit var bt2: Button
     private lateinit var tx1: TextView
     private lateinit var tv3: TextView
+    private lateinit var btRes: TextView
 
     // Lista para armazenar os resultados já sorteados
     private val resultados = mutableListOf<String>()
+    private fun limparResultados() {
+        resultados.clear()
+
+        // Limpa os resultados salvos no SharedPreferences
+        val prefs = getPreferences(Context.MODE_PRIVATE)
+        prefs.edit().remove("resultados").apply()
+
+        // Limpa os resultados salvos em arquivo
+        try {
+            val file = File(getExternalFilesDir(null), "resultados.txt")
+            file.writeText("")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         // Inicialização das views
         bt1 = findViewById(R.id.bt1)
         bt2 = findViewById(R.id.bt2)
         tx1 = findViewById(R.id.tx1)
         tv3 = findViewById(R.id.tv3)
+        btRes = findViewById(R.id.btRes)
+
+        // Recupera os resultados já sorteados do SharedPreferences e adiciona na lista resultados
+        val prefs = getPreferences(Context.MODE_PRIVATE)
+        val resultadosString = prefs.getString("resultados", "")
+        if (resultadosString?.isNotBlank() == true) {
+            resultados.addAll(resultadosString.split(","))
+        }
+
         // Animações utilizadas na atividade
         val animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.button_fade_out)
         val animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         val animFadeIn2 = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in2)
+
+        bt1.setOnClickListener {
+            // Inicia a animação de fade out do botão 1
+            bt1.startAnimation(animFadeOut)
+            tv3.startAnimation(animFadeOut)
+        }
+
+        bt2.setOnClickListener {
+            val uri: Uri = Uri.parse("https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
+
+
+        //Define um listener para o clique no botão btRes. Quando o botão é clicado, é exibido o
+        // resultado completo dos sorteios já realizados.
+            btRes.setOnClickListener {
+            val resultadoText = resultados.joinToString(separator = "\n\n")
+            val intent = Intent(this, ResultadoActivity::class.java)
+            intent.putExtra("resultado", resultadoText)
+            startActivity(intent)
+        }
+
+        // Verifica se a flag limparResultados está presente nos extras da intent
+        val limparResultados = intent.getBooleanExtra("limparResultados", false)
+        if (limparResultados) {
+            limparResultados()
+        }
 
         animFadeOut.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
@@ -77,47 +142,81 @@ class MainActivity : AppCompatActivity() {
                     .joinToString(separator = " - ") { it.toString().padStart(2, '0') }
                 resultados.add(sortedNumbers)
 
-                val resultadoText = resultados.joinToString(separator = "\n")
+                // Salva os resultados já sorteados no SharedPreferences
+                val prefs = getPreferences(MODE_PRIVATE)
+                prefs.edit().putString("resultados", resultados.joinToString(",")).apply()
 
-                // Inicia a atividade de resultados passando o texto com os resultados como parâmetro
-                val intent = Intent(this@MainActivity, ResultadoActivity::class.java)
-                intent.putExtra("resultado", resultadoText)
+                 fun limparResultados() {
+                    val prefs = getPreferences(MODE_PRIVATE)
+                    prefs.edit().remove("resultados").apply()
+                    resultados.clear()
+                }
 
                 // Atualiza a exibição dos botões e textos com as animações apropriadas
                 bt1.startAnimation(animFadeIn2)
                 bt1.text = "Boa sorte!\n $sortedNumbers"
                 bt1.setBackgroundResource(androidx.appcompat.R.drawable.abc_ab_share_pack_mtrl_alpha)
-
                 tx1.text = messages.random()
                 tx1.startAnimation(animFadeIn)
-                tv3.text = "Se você ganhar, faça um PIX como\n agradecimento (35)992469549"
-                tv3.startAnimation(animFadeIn)
 
+
+                // Define a URL que será aberta ao clicar no texto
+                val url = "https://play.google.com/store/apps/details?id=com.sorteriomega1976.megasenasorteio"
+                // Define o texto que será exibido na tela
+                val linkText = "Se você ganhar, faça um PIX como\n agradecimento (35)992469549\nE avalie o App :)"
+                // Cria uma nova SpannableString a partir do texto
+                val spannableString = SpannableString(linkText)
+                // Cria um novo ClickableSpan para o texto clicável
+                val clickableSpan = object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        // Ao clicar no texto, abre a URL definida anteriormente
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        startActivity(intent)
+                    }
+
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+
+
+                        // Remove o sublinhado do texto
+                        ds.isUnderlineText = false
+                        // Define a transparência do texto em 80%
+                        ds.alpha = 60f.toInt() // valor de 0.0f a 1.0f
+                        // Define a cor do texto
+                        val textColor = ContextCompat.getColor(tv3.context, R.color.linkColor)
+                        ds.color = textColor
+
+                    }
+                }
+                 // Aplica o ClickableSpan ao texto
+                spannableString.setSpan(clickableSpan, 0, linkText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                // Define o texto formatado na TextView
+                tv3.text = spannableString
+                // Aplica a animação de fade-in na TextView
+                tv3.startAnimation(animFadeIn)
+                // Define o movimento do texto ao clicar no link
+                tv3.movementMethod = LinkMovementMethod.getInstance()
+                // Define a cor transparente de realce do texto ao clicar no link
+                tv3.highlightColor = Color.TRANSPARENT
+
+                // Salva os resultados em um arquivo de texto
+                salvarResultados(resultados)
+            }
+            private fun salvarResultados(resultados: MutableList<String>) {
+                try {
+                    val file = File(getExternalFilesDir(null), "resultados.txt")
+                    val fileWriter = FileWriter(file, true)
+                    for (resultado in resultados) {
+                        fileWriter.write("$resultado\n")
+                    }
+                    fileWriter.flush()
+                    fileWriter.close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         })
-        //Define um listener para o clique no botão bt1. Quando o botão é clicado, as animações
-        // de fade out são executadas nos elementos da interface gráfica.
-        bt1.setOnClickListener {
-            bt1.startAnimation(animFadeOut)
-            tx1.startAnimation(animFadeOut)
-            tv3.startAnimation(animFadeOut)
-
-        }
-        //Define um listener para o clique no botão bt2. Quando o botão é clicado, é aberta a página
-        // da Mega-Sena no site da Caixa.
-        bt2.setOnClickListener {
-            val uri: Uri = Uri.parse("https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx")
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intent)
-        }
-        //Define um listener para o clique no botão btRes. Quando o botão é clicado, é exibido o
-        // resultado completo dos sorteios já realizados.
-        val btRes: Button = findViewById(R.id.btRes)
-        btRes.setOnClickListener {
-            val resultadoText = resultados.joinToString(separator = "\n\n")
-            val intent = Intent(this, ResultadoActivity::class.java)
-            intent.putExtra("resultado", resultadoText)
-            startActivity(intent)
-        }
     }
+
 }

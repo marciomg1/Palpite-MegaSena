@@ -29,7 +29,8 @@
         android:id="@+id/scrollView"
         android:layout_width="408dp"
         android:layout_height="499dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/btV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.6"
         app:layout_constraintHorizontal_bias="0.0"
@@ -48,34 +49,35 @@
             android:textSize="24sp" />
     </ScrollView>
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="311dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginBottom="8dp"
-        android:text="Atenção!!\n Ao clicar no Botão voltar\n a lista será apagada!"
-        android:textAlignment="center"
-        android:textColor="#FF5722"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/btV"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
-
     <Button
         android:id="@+id/btV"
-        android:layout_width="213dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="99dp"
-        android:layout_marginEnd="99dp"
+        android:layout_width="117dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="6dp"
         android:layout_marginBottom="32dp"
         android:background="#11FFFFFF"
         android:text="Voltar"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnLimpar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
+
+    <Button
+        android:id="@+id/btnLimpar"
+        android:layout_width="117dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginEnd="61dp"
+        android:layout_marginBottom="50dp"
+        android:background="#12FFFFFF"
+        android:text="Limpar "
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/btV"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

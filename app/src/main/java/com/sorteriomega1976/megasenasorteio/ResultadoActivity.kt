@@ -5,15 +5,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 class ResultadoActivity : AppCompatActivity() {
     private lateinit var tvR: TextView
+    private lateinit var mainActivity: MainActivity
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resultado)
         // Inicializa a TextView a partir do seu ID definido no arquivo de layout
         tvR = findViewById<TextView>(R.id.tvR)
+
 
         // Verifica se há um estado anterior salvo da atividade
         if (savedInstanceState != null) {
@@ -31,5 +35,14 @@ class ResultadoActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+        val btnLimpar = findViewById<Button>(R.id.btnLimpar)
+        btnLimpar.setOnClickListener {
+            val mainActivity = Intent(this, MainActivity::class.java)
+            mainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            mainActivity.putExtra("limparResultados", true)
+            startActivity(mainActivity)
+            finish()
+        }
+
     }
 }
