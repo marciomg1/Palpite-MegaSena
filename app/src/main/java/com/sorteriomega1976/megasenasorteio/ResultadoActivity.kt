@@ -1,6 +1,7 @@
 package com.sorteriomega1976.megasenasorteio
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -42,6 +43,12 @@ class ResultadoActivity : AppCompatActivity() {
             mainActivity.putExtra("limparResultados", true)
             startActivity(mainActivity)
             finish()
+        }
+        val btAv: Button = findViewById(R.id.btAv)
+        btAv.setOnClickListener {
+            val uri: Uri = Uri.parse("https://play.google.com/store/apps/details?id=com.sorteriomega1976.megasenasorteio")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
         }
 
     }

@@ -1,5 +1,6 @@
 package com.sorteriomega1976.megasenasorteio
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,15 +11,24 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.ActivityResult
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import java.io.File
 import java.io.FileWriter
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     // Views utilizadas na atividade:
+    private val REQUEST_CODE_UPDATE = 100
     private lateinit var bt1: Button
     private lateinit var bt2: Button
     private lateinit var tx1: TextView
@@ -83,6 +94,59 @@ class MainActivity : AppCompatActivity() {
         tx1 = findViewById(R.id.tx1)
         tv3 = findViewById(R.id.tv3)
         btRes = findViewById(R.id.btRes)
+
+        fun onBackPressed() {
+            super.onBackPressed()
+            finish()
+        }
+
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        fun verificarAtualizacao(appUpdateManager: AppUpdateManager) {
+            val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+            appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                    val dialog = AlertDialog.Builder(this)
+                        .setTitle("Atualização disponível")
+                        .setMessage("Uma nova versão do aplicativo está disponível. Deseja atualizar agora?")
+                        .setPositiveButton("Sim") { dialog, which ->
+                            appUpdateManager.startUpdateFlowForResult(
+                                appUpdateInfo,
+                                AppUpdateType.IMMEDIATE,
+                                this,
+                                REQUEST_CODE_UPDATE
+                            )
+                        }
+                        .setNegativeButton("Não", null)
+                        .create()
+
+                    dialog.show()
+                }
+            }
+        }
+
+        @Deprecated("onActivityResult é deprecado, use registerForActivityResult em seu lugar")
+        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (requestCode == REQUEST_CODE_UPDATE) {
+                when (resultCode) {
+                    RESULT_OK -> {
+                        // A atualização foi concluída com sucesso
+                        Log.i(TAG, "Atualização concluída com sucesso")
+                        recreate()
+                    }
+                    RESULT_CANCELED -> {
+                        // O usuário cancelou a atualização
+                        Log.i(TAG, "Atualização cancelada pelo usuário")
+                    }
+                    ActivityResult.RESULT_IN_APP_UPDATE_FAILED -> {
+                        // A atualização falhou
+                        Log.i(TAG, "Falha na atualização")
+                    }
+                }
+            }
+        }
 
         // Recupera os resultados já sorteados do SharedPreferences e adiciona na lista resultados
         val prefs = getPreferences(Context.MODE_PRIVATE)
@@ -128,7 +192,7 @@ class MainActivity : AppCompatActivity() {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationRepeat(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
-                // Sorteia 6 números aleatórios entre 1 e 60 e exibe o resultado
+            // Sorteia 6 números aleatórios entre 1 e 60 e exibe o resultado
                 val random = Random
                 val numbers = mutableSetOf<Int>()
                 while (numbers.size < 6) {
@@ -140,7 +204,9 @@ class MainActivity : AppCompatActivity() {
 
                 val sortedNumbers = numbers.sorted()
                     .joinToString(separator = " - ") { it.toString().padStart(2, '0') }
-                resultados.add(sortedNumbers)
+                val sortedNumbersWithDate = "${SimpleDateFormat("dd/MM/yy - HH:mm").format(Date())} -       $sortedNumbers"
+                resultados.add(sortedNumbersWithDate)
+
 
                 // Salva os resultados já sorteados no SharedPreferences
                 val prefs = getPreferences(MODE_PRIVATE)
@@ -159,7 +225,6 @@ class MainActivity : AppCompatActivity() {
                 tx1.text = messages.random()
                 tx1.startAnimation(animFadeIn)
 
-
                 // Define a URL que será aberta ao clicar no texto
                 val url = "https://play.google.com/store/apps/details?id=com.sorteriomega1976.megasenasorteio"
                 // Define o texto que será exibido na tela
@@ -174,10 +239,8 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
 
-
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
-
 
                         // Remove o sublinhado do texto
                         ds.isUnderlineText = false
@@ -220,3 +283,5 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+

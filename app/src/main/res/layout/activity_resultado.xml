@@ -8,6 +8,27 @@
     android:background="@drawable/guru12"
     android:gravity="center">
 
+    <Button
+        android:id="@+id/btAv"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="165dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="20dp"
+
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="16dp"
+        android:background="@android:drawable/radiobutton_off_background"
+        android:backgroundTint="#8029252B"
+        android:text="Avalie o App"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#7CFF9800"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnLimpar"
+        app:layout_constraintStart_toEndOf="@+id/btV"
+        app:layout_constraintTop_toBottomOf="@+id/btV" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="345dp"
@@ -45,21 +66,26 @@
             android:layout_marginEnd="46dp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="#FF9800"
-            android:textSize="24sp" />
+            android:textColor="#F3F3F3"
+            android:textSize="14sp" />
     </ScrollView>
 
     <Button
         android:id="@+id/btV"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="117dp"
         android:layout_height="56dp"
         android:layout_marginStart="52dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="32dp"
-        android:background="#11FFFFFF"
+        android:background="@android:drawable/radiobutton_off_background"
+
+        android:backgroundTint="#8029252B"
         android:text="Voltar"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#7CFF9800"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnLimpar"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,8 +99,12 @@
         android:layout_marginTop="38dp"
         android:layout_marginEnd="61dp"
         android:layout_marginBottom="50dp"
-        android:background="#12FFFFFF"
+        android:background="@android:drawable/radiobutton_off_background"
+        android:backgroundTint="#8029252B"
         android:text="Limpar "
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#7CFF9800"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btV"
